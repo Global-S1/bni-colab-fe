@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SuperAdminDashboard } from '../components/admin/SuperAdminDashboard';
+---
+
+<Layout title="BNI Colab — Panel Root Admin" requireAuth={true}>
+  <SuperAdminDashboard client:load />
+</Layout>

@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TaskDetailView from '../../components/tasks/TaskDetailView';
+
+const { id } = Astro.params;
+---
+
+<Layout title="Detalle de Tarea" requireAuth={true}>
+  <TaskDetailView taskId={id || ''} client:load />
+</Layout>

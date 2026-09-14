@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { ProjectDetail } from '../../components/projects/ProjectDetail';
+
+const { id } = Astro.params;
+---
+
+<Layout title="BNI Colab — Detalle de Proyecto">
+  {id ? <ProjectDetail client:load projectId={id} /> : <div class="py-12 text-center text-rose-300">ID de Proyecto Inválido</div>}
+</Layout>

@@ -1,0 +1,192 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  requireAuth?: boolean;
+}
+
+const { title = 'BNI Colab — Plataforma Colaborativa', requireAuth = false } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
+---
+
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-gray-50 antialiased">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>{title} | BNI Colab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="h-full overflow-hidden flex font-sans text-gray-900 bg-[#F8F9FA]">
+  <!-- Sidebar idéntica a Eventos (Dark #121117 con logo TECH Admin y menú dinámico) -->
+  <aside id="sidebar" class="w-[85vw] max-w-[300px] md:w-64 bg-[#121117] text-gray-300 flex-shrink-0 flex flex-col absolute inset-y-0 left-0 z-40 md:static shadow-2xl transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0 hidden md:flex">
+    <!-- Logo Area -->
+    <div class="h-16 md:h-20 flex items-center px-4 md:px-6 border-b border-gray-800/60 bg-[#1A1A24]">
+      <div class="bg-white w-10 h-10 rounded-lg mr-3 shadow-md inline-flex items-center justify-center shrink-0">
+        <span class="text-[9px] font-black tracking-tight text-[#D40000] text-center leading-none">TECH</span>
+      </div>
+      <span class="text-xl font-bold text-white tracking-wide"><span class="text-[#D40000] font-black">Colab</span></span>
+      <span class="ml-2 text-[10px] font-semibold text-gray-500 bg-gray-800/60 border border-gray-700/60 rounded-full px-2 py-0.5 tracking-wider">v1.0</span>
+    </div>
+
+    <!-- Navigation Area -->
+    <div class="flex-1 overflow-y-auto py-6 px-4 no-scrollbar">
+      <nav class="space-y-1.5">
+        <p class="px-3 text-[10px] font-bold tracking-widest text-[#D40000]/80 uppercase mb-2">Plataforma</p>
+
+        <a
+          href="/teams"
+          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+            currentPath === '/teams' || currentPath.startsWith('/teams/') && !currentPath.includes('/new')
+              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
+              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
+          }`}
+        >
+          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a3 3 0 10-3-3m-9 3a3 3 0 11-3-3"></path>
+          </svg>
+          <span>Equipos</span>
+        </a>
+
+        <a
+          href="/projects"
+          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+            currentPath === '/projects' || (currentPath.startsWith('/projects/') && !currentPath.includes('/new'))
+              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
+              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
+          }`}
+        >
+          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+          </svg>
+          <span>Proyectos</span>
+        </a>
+
+        <a
+          href="/teams/new"
+          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+            currentPath === '/teams/new'
+              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
+              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
+          }`}
+        >
+          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>+ Nuevo Equipo</span>
+        </a>
+
+        <a
+          href="/calendar"
+          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+            currentPath === '/calendar'
+              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
+              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
+          }`}
+        >
+          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <span>Calendario</span>
+        </a>
+
+        <p class="px-3 text-[10px] font-bold tracking-widest text-[#D40000]/80 uppercase mb-2 mt-6">Administración</p>
+
+        <a
+          href="/admin"
+          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+            currentPath === '/admin'
+              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
+              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
+          }`}
+        >
+          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+          <span>Root Admin</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- User Profile Footer in Sidebar -->
+    <div class="mt-auto p-4 border-t border-gray-800/60 bg-[#1A1A24]">
+      <div class="flex items-center justify-between">
+        <a href="/profile" class="flex items-center flex-1 overflow-hidden rounded-lg p-1.5 -ml-1.5 hover:bg-gray-800/60 transition-colors group cursor-pointer" title="Ver y editar mi perfil">
+          <div id="user-avatar" class="w-9 h-9 rounded-full bg-[#D40000]/20 border border-[#D40000]/30 group-hover:border-[#D40000] flex items-center justify-center text-[#D40000] font-bold text-sm uppercase shrink-0 transition-colors">
+            BNI
+          </div>
+          <div class="ml-3 flex-1 overflow-hidden text-left">
+            <p id="user-name" class="text-sm font-bold text-white group-hover:text-[#D40000] transition-colors truncate">Usuario</p>
+            <p id="user-email" class="text-[11px] text-gray-500 truncate">⚙️ Mi Perfil</p>
+          </div>
+        </a>
+        <button id="logout-btn" class="p-2 text-gray-400 hover:text-[#D40000] hover:bg-[#D40000]/10 rounded-lg cursor-pointer shrink-0 ml-1" title="Cerrar sesión">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <!-- Top Header Bar (Blanco con bordes limpios como en Eventos) -->
+    <header class="h-16 md:h-20 flex items-center justify-between px-4 sm:px-6 lg:px-10 bg-white border-b border-gray-200 z-20 shrink-0 shadow-sm relative gap-3">
+      <div class="flex items-center flex-1 min-w-0">
+        <!-- Logo / Titulo en top header -->
+        <h2 class="text-base sm:text-xl font-bold text-gray-800 tracking-tight truncate">{title}</h2>
+      </div>
+
+      <div class="flex shrink-0 items-center gap-2 sm:gap-4 pl-2">
+        <!-- Estado Sincronización BNI -->
+        <div class="px-3.5 py-1.5 bg-[#F8F9FA] border border-gray-200 rounded-full flex items-center gap-2 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-[#D40000] animate-pulse"></span>
+          <span class="text-[10px] font-black uppercase tracking-wider text-gray-700 leading-none">BNI TECH COLAB</span>
+        </div>
+        <span class="hidden sm:block text-xs text-gray-400 whitespace-nowrap">&copy; 2026 Global S1</span>
+      </div>
+    </header>
+
+    <!-- Main Scrollable Area -->
+    <main class="flex-1 overflow-y-auto overflow-x-hidden relative bg-[#F8F9FA]">
+      <div class="px-4 py-5 sm:px-6 sm:py-8 lg:px-10 lg:py-10 max-w-7xl mx-auto w-full relative">
+        <slot />
+      </div>
+    </main>
+  </div>
+
+  <!-- Script de protección de rutas y sesión -->
+  <script is:inline define:vars={{ requireAuth }}>
+    const token = localStorage.getItem('bni_colab_token');
+    const userJson = localStorage.getItem('bni_colab_user');
+    const user = userJson ? JSON.parse(userJson) : null;
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (requireAuth && !token) {
+      window.location.href = '/login';
+    }
+
+    if (user) {
+      const nameEl = document.getElementById('user-name');
+      const emailEl = document.getElementById('user-email');
+      const avatarEl = document.getElementById('user-avatar');
+      if (nameEl) nameEl.textContent = user.name || 'Usuario';
+      if (emailEl) emailEl.textContent = user.email || 'Miembro';
+      if (avatarEl && user.name) avatarEl.textContent = user.name.substring(0, 2).toUpperCase();
+    }
+
+    if (logoutBtn) {
+      logoutBtn.onclick = () => {
+        localStorage.removeItem('bni_colab_token');
+        localStorage.removeItem('bni_colab_user');
+        window.location.href = '/login';
+      };
+    }
+  </script>
+</body>
+</html>
+

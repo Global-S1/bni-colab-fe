@@ -1,0 +1,8 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { CreateTeamView } from '../../components/teams/CreateTeamView';
+---
+
+<Layout title="BNI Colab — Crear Nuevo Equipo" requireAuth={true}>
+  <CreateTeamView client:load />
+</Layout>

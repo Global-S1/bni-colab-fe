@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CalendarView from '../components/meetings/CalendarView';
+---
+
+<Layout title="Calendario & Reuniones" requireAuth={true}>
+  <CalendarView client:load />
+</Layout>
