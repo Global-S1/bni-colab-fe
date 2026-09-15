@@ -12,9 +12,3 @@ services:
       - HOST=0.0.0.0
       - PORT=4322
       - PUBLIC_API_URL=${PUBLIC_API_URL:-http://colab-be-prod.bnitech.online:3002/api/v1}
-    networks:
-      - bni-colab-net-prod
-
-networks:
-  bni-colab-net-prod:
-    driver: bridge
