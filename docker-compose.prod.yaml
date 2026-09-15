@@ -1,30 +1,20 @@
 services:
-  frontend:
+  colab-fe-prod.bnitech.online:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: colab-fe.bnitech.online
-    restart: always
+    container_name: colab-fe-prod.bnitech.online
+    restart: unless-stopped
     ports:
       - "4322"
     environment:
       - NODE_ENV=production
       - HOST=0.0.0.0
       - PORT=4322
-      - PUBLIC_API_URL=${PUBLIC_API_URL:-https://colab-be.bnitech.online/api/v1}
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4322/"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
+      - PUBLIC_API_URL=${PUBLIC_API_URL:-http://colab-be-prod.bnitech.online:3002/api/v1}
     networks:
-      coolify:
-        aliases:
-          - colab-fe.bnitech.online
+      - bni-colab-net-prod
 
 networks:
-  coolify:
-    name: coolify
+  bni-colab-net-prod:
     driver: bridge
-    external: true
