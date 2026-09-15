@@ -247,14 +247,42 @@ export const InteractiveTour: React.FC<InteractiveTourProps> = ({ isOpen: extern
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden pointer-events-auto">
-      {/* Semi-transparent Backdrop with SVG hole/cutout or spotlight highlight */}
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px] transition-all duration-300" onClick={handleClose} />
+      {/* SVG Backdrop Overlay with Cutout Hole Mask over targetRect */}
+      <svg className="fixed inset-0 w-full h-full z-40 pointer-events-auto cursor-pointer" onClick={handleClose}>
+        <defs>
+          <mask id="tour-spotlight-mask">
+            {/* White fills the screen (opaque dark overlay) */}
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            {/* Black rectangle creates a 100% transparent cutout hole over the target element */}
+            {targetRect && (
+              <rect
+                x={targetRect.left - 6}
+                y={targetRect.top - 6}
+                width={targetRect.width + 12}
+                height={targetRect.height + 12}
+                rx="16"
+                ry="16"
+                fill="black"
+              />
+            )}
+          </mask>
+        </defs>
+        {/* Dark backdrop rect rendered through the mask */}
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="rgba(0, 0, 0, 0.75)"
+          mask="url(#tour-spotlight-mask)"
+        />
+      </svg>
 
       {/* Spotlight Ring around target element */}
       {targetRect && (
         <div
           onClick={handleTargetClick}
-          className="fixed z-50 border-4 border-[#D40000] rounded-2xl shadow-[0_0_35px_#D40000,0_0_15px_rgba(212,0,0,0.8)] animate-pulse cursor-pointer transition-all duration-300 pointer-events-auto group bg-[#D40000]/10 hover:bg-[#D40000]/20"
+          className="fixed z-50 border-4 border-[#D40000] rounded-2xl shadow-[0_0_35px_#D40000,0_0_15px_rgba(212,0,0,0.8)] animate-pulse cursor-pointer transition-all duration-300 pointer-events-auto group hover:bg-[#D40000]/10"
           style={{
             top: `${targetRect.top - 6}px`,
             left: `${targetRect.left - 6}px`,
