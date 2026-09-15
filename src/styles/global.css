@@ -17,22 +17,22 @@
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(229, 231, 235, 0.8);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
 }
 
 .glass-card {
   background: #FFFFFF;
-  border: 1px solid #F3F4F6;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.06);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(212, 0, 0, 0.3);
-  box-shadow: 0 10px 25px -5px rgba(212, 0, 0, 0.1), 0 8px 10px -6px rgba(212, 0, 0, 0.05);
+  border-color: #D40000;
+  box-shadow: 0 10px 25px -5px rgba(212, 0, 0, 0.15), 0 8px 10px -6px rgba(212, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 
@@ -40,13 +40,14 @@
 .btn-brand-glow {
   background: linear-gradient(to right, #D40000, #8B0000);
   color: #FFFFFF;
-  box-shadow: 0 4px 14px 0 rgba(212, 0, 0, 0.25);
+  font-weight: 700;
+  box-shadow: 0 4px 14px 0 rgba(212, 0, 0, 0.3);
   transition: all 0.2s ease-in-out;
 }
 
 .btn-brand-glow:hover {
   background: linear-gradient(to right, #B80000, #730000);
-  box-shadow: 0 6px 20px 0 rgba(212, 0, 0, 0.35);
+  box-shadow: 0 6px 20px 0 rgba(212, 0, 0, 0.4);
   transform: scale(1.01);
 }
 
@@ -54,22 +55,28 @@
   transform: scale(0.99);
 }
 
-/* Inputs de Formulario Plataforma Eventos */
+/* Inputs de Formulario Plataforma Eventos (Accesibilidad WCAG 2.1 AA) */
 .brand-input {
   background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  color: #111827;
-  border-radius: 1rem;
+  border: 1px solid #CBD5E1;
+  color: #0F172A;
+  border-radius: 0.875rem;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
+  font-weight: 500;
   transition: all 0.2s ease;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
+.brand-input::placeholder {
+  color: #64748B;
+}
+
 .brand-input:focus {
-  outline: none;
+  outline: 2px solid #D40000;
+  outline-offset: 2px;
   border-color: #D40000;
-  box-shadow: 0 0 0 3px rgba(212, 0, 0, 0.15);
+  box-shadow: 0 0 0 3px rgba(212, 0, 0, 0.2);
   background: #FFFFFF;
 }
 

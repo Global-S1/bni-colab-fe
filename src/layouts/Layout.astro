@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { InteractiveTour } from '../components/common/InteractiveTour';
 
 interface Props {
   title?: string;
@@ -21,6 +22,9 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="h-full overflow-hidden flex font-sans text-gray-900 bg-[#F8F9FA]">
+  <!-- Interactive Tour Overlay Component -->
+  <InteractiveTour client:load />
+
   <!-- Sidebar idéntica a Eventos (Dark #121117 con logo TECH Admin y menú dinámico) -->
   <aside id="sidebar" class="w-[85vw] max-w-[300px] md:w-64 bg-[#121117] text-gray-300 flex-shrink-0 flex flex-col absolute inset-y-0 left-0 z-40 md:static shadow-2xl transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0 hidden md:flex">
     <!-- Logo Area -->
@@ -40,7 +44,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
         <a
           href="/teams"
           class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
-            currentPath === '/teams' || currentPath.startsWith('/teams/') && !currentPath.includes('/new')
+            currentPath === '/teams' || (currentPath.startsWith('/teams/') && !currentPath.includes('/new'))
               ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
               : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
           }`}
@@ -63,20 +67,6 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
           </svg>
           <span>Proyectos</span>
-        </a>
-
-        <a
-          href="/teams/new"
-          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
-            currentPath === '/teams/new'
-              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
-              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
-          }`}
-        >
-          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          <span>+ Nuevo Equipo</span>
         </a>
 
         <a
@@ -142,8 +132,22 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
       </div>
 
       <div class="flex shrink-0 items-center gap-2 sm:gap-4 pl-2">
+        <!-- Botón para abrir Tutorial Interactivo -->
+        <button
+          id="open-tour-btn"
+          type="button"
+          onclick="localStorage.removeItem('bni_colab_tour_completed'); window.location.reload();"
+          class="px-3 py-1.5 bg-[#D40000]/10 hover:bg-[#D40000]/20 text-[#D40000] border border-[#D40000]/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          title="Ver tutorial interactivo de la plataforma"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="hidden sm:inline">Guía Interactiva</span>
+        </button>
+
         <!-- Estado Sincronización BNI -->
-        <div class="px-3.5 py-1.5 bg-[#F8F9FA] border border-gray-200 rounded-full flex items-center gap-2 shadow-sm">
+        <div class="px-3.5 py-1.5 bg-[#F8F9FA] border border-gray-200 rounded-full flex items-center gap-2 shadow-xs">
           <span class="w-2 h-2 rounded-full bg-[#D40000] animate-pulse"></span>
           <span class="text-[10px] font-black uppercase tracking-wider text-gray-700 leading-none">BNI TECH COLAB</span>
         </div>
