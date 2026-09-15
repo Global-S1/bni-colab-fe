@@ -109,7 +109,7 @@ export const ProjectDetail: React.FC<{ projectId: string }> = ({ projectId }) =>
     try {
       setExporting(true);
       const token = localStorage.getItem('bni_colab_token');
-      const response = await fetch(`http://localhost:3002/api/v1/projects/${projectId}/export-excel`, {
+      const response = await fetch(`/api/v1/projects/${projectId}/export-excel`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
