@@ -1,9 +1,9 @@
 services:
-  colab-fe-prod.bnitech.online:
+  colab-fe-prod_bnitech_online:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: colab-fe-prod.bnitech.online
+    container_name: colab-fe-prod_bnitech_online
     restart: unless-stopped
     ports:
       - "4322"
