@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3002/api/v1';
+const API_BASE_URL = import.meta.env.PUBLIC_API_URL || '/api/v1';
 
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {
