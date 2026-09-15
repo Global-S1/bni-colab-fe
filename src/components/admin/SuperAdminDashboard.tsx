@@ -15,7 +15,7 @@ export const SuperAdminDashboard: React.FC = () => {
   const [users, setUsers] = useState<UserItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [needsAuth, setNeedsAuth] = useState(false);
+  const [isUnauthorized, setIsUnauthorized] = useState(false);
 
   // Form state
   const [email, setEmail] = useState('');
@@ -26,21 +26,30 @@ export const SuperAdminDashboard: React.FC = () => {
 
   const loadUsers = async () => {
     const token = getAuthToken();
-    if (!token) {
-      setNeedsAuth(true);
+    const userJson = localStorage.getItem('bni_colab_user');
+    const user = userJson ? JSON.parse(userJson) : null;
+
+    if (!token || !user || user.systemRole !== 'SUPER_ADMIN') {
+      setIsUnauthorized(true);
       setLoading(false);
+      setTimeout(() => {
+        window.location.href = '/projects';
+      }, 2000);
       return;
     }
 
     try {
       setLoading(true);
-      setNeedsAuth(false);
+      setIsUnauthorized(false);
       setError(null);
       const data = await fetchApi<UserItem[]>('/auth/admin/users');
       setUsers(data);
     } catch (err: any) {
-      if (err.message?.includes('No autorizado') || err.message?.includes('token') || err.message?.includes('Token')) {
-        setNeedsAuth(true);
+      if (err.message?.includes('Acceso denegado') || err.message?.includes('permisos') || err.status === 403) {
+        setIsUnauthorized(true);
+        setTimeout(() => {
+          window.location.href = '/projects';
+        }, 2000);
       } else {
         setError(err.message || 'Error cargando lista de usuarios');
       }
@@ -74,11 +83,37 @@ export const SuperAdminDashboard: React.FC = () => {
       setName('');
       loadUsers();
     } catch (err: any) {
-      setError(err.message || 'Error registrando usuario.');
+      if (err.message?.includes('Acceso denegado') || err.status === 403) {
+        setIsUnauthorized(true);
+      } else {
+        setError(err.message || 'Error registrando usuario.');
+      }
     } finally {
       setSaving(false);
     }
   };
+
+  if (isUnauthorized) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-6 space-y-6">
+        <div className="w-20 h-20 rounded-3xl bg-red-50 border-2 border-red-200 text-[#D40000] flex items-center justify-center text-4xl shadow-xl">
+          🛡️
+        </div>
+        <div className="space-y-2 max-w-md">
+          <h2 className="text-2xl font-black text-gray-900 tracking-tight">Acceso Restringido (403)</h2>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            No cuentas con permisos de Super Administrador (Root) para ver esta sección. Redirigiendo a tus proyectos...
+          </p>
+        </div>
+        <a
+          href="/projects"
+          className="bg-gradient-to-r from-[#D40000] to-[#8B0000] text-white font-bold py-3.5 px-6 rounded-2xl text-xs uppercase tracking-wider shadow-lg shadow-[#D40000]/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
+        >
+          Ir a Mis Proyectos Ahora
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
@@ -91,31 +126,7 @@ export const SuperAdminDashboard: React.FC = () => {
           </h1>
           <p className="text-gray-500 text-sm mt-1">Autoriza miembros para acceso seguro por enlace mágico a la plataforma.</p>
         </div>
-
-        {needsAuth && (
-          <a
-            href="/login"
-            className="bg-gradient-to-r from-[#D40000] to-[#8B0000] text-white font-bold py-3.5 px-6 rounded-2xl text-xs tracking-widest uppercase shadow-lg shadow-[#D40000]/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
-          >
-            Iniciar Sesión como Admin
-          </a>
-        )}
       </div>
-
-      {/* Alerta si requiere autenticación */}
-      {needsAuth && (
-        <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-sm flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-[#D40000] text-lg font-bold">⚠️</span>
-            <span className="font-medium">
-              Para gestionar usuarios y acceder a las funciones de Root Admin debes iniciar sesión.
-            </span>
-          </div>
-          <a href="/login" className="bg-[#D40000] text-white font-bold px-4 py-2 rounded-xl text-xs hover:bg-[#B80000] transition-colors shrink-0 uppercase tracking-wider">
-            Ir al Login
-          </a>
-        </div>
-      )}
 
       {/* Grid de Formulario y Tabla */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -188,7 +199,7 @@ export const SuperAdminDashboard: React.FC = () => {
 
             <button
               type="submit"
-              disabled={saving || needsAuth}
+              disabled={saving}
               className="w-full bg-gradient-to-r from-[#D40000] to-[#8B0000] text-white font-bold py-3.5 px-4 rounded-xl text-xs uppercase tracking-wider shadow-md shadow-[#D40000]/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 mt-2"
             >
               {saving ? 'Registrando...' : 'Autorizar Usuario'}

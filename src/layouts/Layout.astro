@@ -86,22 +86,24 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
           <span>Calendario</span>
         </a>
 
-        <p class="px-3 text-[10px] font-bold tracking-widest text-[#D40000]/80 uppercase mb-2 mt-6">Administración</p>
+        <div id="nav-admin-section" class="hidden">
+          <p class="px-3 text-[10px] font-bold tracking-widest text-[#D40000]/80 uppercase mb-2 mt-6">Administración</p>
 
-        <a
-          href="/admin"
-          data-tour="nav-admin"
-          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
-            currentPath === '/admin'
-              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
-              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
-          }`}
-        >
-          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-          </svg>
-          <span>Root Admin</span>
-        </a>
+          <a
+            href="/admin"
+            data-tour="nav-admin"
+            class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+              currentPath === '/admin'
+                ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
+                : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
+            }`}
+          >
+            <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+            </svg>
+            <span>Root Admin</span>
+          </a>
+        </div>
       </nav>
     </div>
 
@@ -183,9 +185,19 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
       const nameEl = document.getElementById('user-name');
       const emailEl = document.getElementById('user-email');
       const avatarEl = document.getElementById('user-avatar');
+      const adminSection = document.getElementById('nav-admin-section');
+
       if (nameEl) nameEl.textContent = user.name || 'Usuario';
       if (emailEl) emailEl.textContent = user.email || 'Miembro';
       if (avatarEl && user.name) avatarEl.textContent = user.name.substring(0, 2).toUpperCase();
+
+      if (adminSection) {
+        if (user.systemRole === 'SUPER_ADMIN') {
+          adminSection.classList.remove('hidden');
+        } else {
+          adminSection.classList.add('hidden');
+        }
+      }
     }
 
     if (logoutBtn) {
