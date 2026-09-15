@@ -28,7 +28,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
   <!-- Sidebar idéntica a Eventos (Dark #121117 con logo TECH Admin y menú dinámico) -->
   <aside id="sidebar" class="w-[85vw] max-w-[300px] md:w-64 bg-[#121117] text-gray-300 flex-shrink-0 flex flex-col absolute inset-y-0 left-0 z-40 md:static shadow-2xl transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0 hidden md:flex">
     <!-- Logo Area -->
-    <div class="h-16 md:h-20 flex items-center px-4 md:px-6 border-b border-gray-800/60 bg-[#1A1A24]">
+    <div data-tour="logo-brand" class="h-16 md:h-20 flex items-center px-4 md:px-6 border-b border-gray-800/60 bg-[#1A1A24]">
       <div class="bg-white w-10 h-10 rounded-lg mr-3 shadow-md inline-flex items-center justify-center shrink-0">
         <span class="text-[9px] font-black tracking-tight text-[#D40000] text-center leading-none">TECH</span>
       </div>
@@ -43,6 +43,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 
         <a
           href="/teams"
+          data-tour="nav-teams"
           class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
             currentPath === '/teams' || (currentPath.startsWith('/teams/') && !currentPath.includes('/new'))
               ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
@@ -57,6 +58,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 
         <a
           href="/projects"
+          data-tour="nav-projects"
           class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
             currentPath === '/projects' || (currentPath.startsWith('/projects/') && !currentPath.includes('/new'))
               ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
@@ -71,6 +73,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 
         <a
           href="/calendar"
+          data-tour="nav-calendar"
           class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
             currentPath === '/calendar'
               ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
@@ -87,6 +90,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 
         <a
           href="/admin"
+          data-tour="nav-admin"
           class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
             currentPath === '/admin'
               ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
@@ -102,7 +106,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
     </div>
 
     <!-- User Profile Footer in Sidebar -->
-    <div class="mt-auto p-4 border-t border-gray-800/60 bg-[#1A1A24]">
+    <div data-tour="nav-profile" class="mt-auto p-4 border-t border-gray-800/60 bg-[#1A1A24]">
       <div class="flex items-center justify-between">
         <a href="/profile" class="flex items-center flex-1 overflow-hidden rounded-lg p-1.5 -ml-1.5 hover:bg-gray-800/60 transition-colors group cursor-pointer" title="Ver y editar mi perfil">
           <div id="user-avatar" class="w-9 h-9 rounded-full bg-[#D40000]/20 border border-[#D40000]/30 group-hover:border-[#D40000] flex items-center justify-center text-[#D40000] font-bold text-sm uppercase shrink-0 transition-colors">
@@ -135,6 +139,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
         <!-- Botón para abrir Tutorial Interactivo -->
         <button
           id="open-tour-btn"
+          data-tour="open-tour-btn"
           type="button"
           onclick="localStorage.removeItem('bni_colab_tour_completed'); window.location.reload();"
           class="px-3 py-1.5 bg-[#D40000]/10 hover:bg-[#D40000]/20 text-[#D40000] border border-[#D40000]/30 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
@@ -147,7 +152,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
         </button>
 
         <!-- Estado Sincronización BNI -->
-        <div class="px-3.5 py-1.5 bg-[#F8F9FA] border border-gray-200 rounded-full flex items-center gap-2 shadow-xs">
+        <div data-tour="sync-badge" class="px-3.5 py-1.5 bg-[#F8F9FA] border border-gray-200 rounded-full flex items-center gap-2 shadow-xs">
           <span class="w-2 h-2 rounded-full bg-[#D40000] animate-pulse"></span>
           <span class="text-[10px] font-black uppercase tracking-wider text-gray-700 leading-none">BNI TECH COLAB</span>
         </div>
