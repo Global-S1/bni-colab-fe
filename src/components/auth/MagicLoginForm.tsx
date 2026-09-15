@@ -47,8 +47,37 @@ export const MagicLoginForm: React.FC = () => {
     }
   };
 
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
+  const [userName, setUserName] = useState('');
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
+    setError(null);
+    setDevMagicUrl(null);
+
+    try {
+      const res = await fetchApi<{ message: string; magicUrl?: string }>('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({ email: email.trim(), name: userName.trim() }),
+      });
+      setMessage(res.message);
+      if (res.magicUrl) {
+        setDevMagicUrl(res.magicUrl);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Error al registrar la cuenta.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isRegisterMode) {
+      return handleRegister(e);
+    }
     setLoading(true);
     setMessage(null);
     setError(null);
@@ -64,7 +93,12 @@ export const MagicLoginForm: React.FC = () => {
         setDevMagicUrl(res.magicUrl);
       }
     } catch (err: any) {
-      setError(err.message || 'Ocurrió un error al solicitar el enlace mágico.');
+      if (err.message?.includes('no está registrado')) {
+        setError('El correo ingresado no está registrado. ¿Deseas crear una cuenta nueva?');
+        setIsRegisterMode(true);
+      } else {
+        setError(err.message || 'Ocurrió un error al solicitar el enlace mágico.');
+      }
     } finally {
       setLoading(false);
     }
@@ -197,7 +231,22 @@ export const MagicLoginForm: React.FC = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {isRegisterMode && (
+          <div>
+            <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">
+              Nombre Completo
+            </label>
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              placeholder="Ej: Daniel Boggiano"
+              className="w-full bg-[#252532]/50 border border-white/10 rounded-2xl py-3.5 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D40000] focus:border-transparent transition-all shadow-inner text-sm"
+            />
+          </div>
+        )}
+
         <div>
           <div className="flex justify-between items-center mb-2 ml-1">
             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest">
@@ -241,11 +290,26 @@ export const MagicLoginForm: React.FC = () => {
               </svg>
               Procesando...
             </span>
+          ) : isRegisterMode ? (
+            'Registrarme y Recibir Enlace'
           ) : (
             'Enviar Enlace de Acceso'
           )}
         </button>
       </form>
+
+      <div className="mt-4 text-center">
+        <button
+          type="button"
+          onClick={() => {
+            setIsRegisterMode(!isRegisterMode);
+            setError(null);
+          }}
+          className="text-xs font-bold text-[#D40000] hover:underline cursor-pointer"
+        >
+          {isRegisterMode ? '← ¿Ya tienes cuenta? Ingresar' : '¿Nuevo usuario en la plataforma? Registrarme aquí →'}
+        </button>
+      </div>
 
       <p className="mt-8 text-center text-xs text-gray-500 font-medium">
         &copy; {new Date().getFullYear()} Global S1. Todos los derechos reservados.
