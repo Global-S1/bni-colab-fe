@@ -19,10 +19,10 @@ const TOUR_STEPS: TourStep[] = [
   {
     selector: '[data-tour="logo-brand"]',
     badge: 'Paso 1 de 7',
-    title: '¡Te damos la bienvenida a BNI Colab!',
+    title: '¡Te damos la bienvenida a BNITECH Colab!',
     description:
       'Esta es tu plataforma colaborativa integral. Te guiaremos paso a paso mostrando exactamente dónde hacer clic en cada sección.',
-    actionHint: '👈 Esta es la identidad principal de BNI Tech Colab.',
+    actionHint: '👈 Esta es la identidad principal de BNITECH Colab.',
     highlights: [
       'Navegación directa por secciones dedicadas.',
       'Identificadores únicos correlativos (BT-001, PRJ-001, TAR-001).',

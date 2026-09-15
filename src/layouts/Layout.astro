@@ -7,7 +7,7 @@ interface Props {
   requireAuth?: boolean;
 }
 
-const { title = 'BNI Colab — Plataforma Colaborativa', requireAuth = false } = Astro.props;
+const { title = 'BNITECH Colab — Plataforma Colaborativa', requireAuth = false } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 ---
 
@@ -16,7 +16,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>{title} | BNI Colab</title>
+  <title>{title} | BNITECH Colab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -25,14 +25,14 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
   <!-- Interactive Tour Overlay Component -->
   <InteractiveTour client:load />
 
-  <!-- Sidebar idéntica a Eventos (Dark #121117 con logo TECH Admin y menú dinámico) -->
+  <!-- Sidebar (Dark #121117 con logo TECH Admin y menú dinámico) -->
   <aside id="sidebar" class="w-[85vw] max-w-[300px] md:w-64 bg-[#121117] text-gray-300 flex-shrink-0 flex flex-col absolute inset-y-0 left-0 z-40 md:static shadow-2xl transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0 hidden md:flex">
     <!-- Logo Area -->
     <div data-tour="logo-brand" class="h-16 md:h-20 flex items-center px-4 md:px-6 border-b border-gray-800/60 bg-[#1A1A24]">
       <div class="bg-white w-10 h-10 rounded-lg mr-3 shadow-md inline-flex items-center justify-center shrink-0">
-        <span class="text-[9px] font-black tracking-tight text-[#D40000] text-center leading-none">TECH</span>
+        <span class="text-[9px] font-black tracking-tight text-[#D40000] text-center leading-none">BNI</span>
       </div>
-      <span class="text-xl font-bold text-white tracking-wide"><span class="text-[#D40000] font-black">Colab</span></span>
+      <span class="text-xl font-bold text-white tracking-wide"><span class="text-[#D40000] font-black">TECH</span></span>
       <span class="ml-2 text-[10px] font-semibold text-gray-500 bg-gray-800/60 border border-gray-700/60 rounded-full px-2 py-0.5 tracking-wider">v1.0</span>
     </div>
 
@@ -112,7 +112,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
       <div class="flex items-center justify-between">
         <a href="/profile" class="flex items-center flex-1 overflow-hidden rounded-lg p-1.5 -ml-1.5 hover:bg-gray-800/60 transition-colors group cursor-pointer" title="Ver y editar mi perfil">
           <div id="user-avatar" class="w-9 h-9 rounded-full bg-[#D40000]/20 border border-[#D40000]/30 group-hover:border-[#D40000] flex items-center justify-center text-[#D40000] font-bold text-sm uppercase shrink-0 transition-colors">
-            BNI
+            BNITECH
           </div>
           <div class="ml-3 flex-1 overflow-hidden text-left">
             <p id="user-name" class="text-sm font-bold text-white group-hover:text-[#D40000] transition-colors truncate">Usuario</p>
@@ -130,7 +130,7 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
 
   <!-- Main Content Area -->
   <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
-    <!-- Top Header Bar (Blanco con bordes limpios como en Eventos) -->
+    <!-- Top Header Bar -->
     <header class="h-16 md:h-20 flex items-center justify-between px-4 sm:px-6 lg:px-10 bg-white border-b border-gray-200 z-20 shrink-0 shadow-sm relative gap-3">
       <div class="flex items-center flex-1 min-w-0">
         <!-- Logo / Titulo en top header -->
@@ -153,10 +153,10 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
           <span class="hidden sm:inline">Guía Interactiva</span>
         </button>
 
-        <!-- Estado Sincronización BNI -->
+        <!-- Estado Sincronización BNITECH -->
         <div data-tour="sync-badge" class="px-3.5 py-1.5 bg-[#F8F9FA] border border-gray-200 rounded-full flex items-center gap-2 shadow-xs">
           <span class="w-2 h-2 rounded-full bg-[#D40000] animate-pulse"></span>
-          <span class="text-[10px] font-black uppercase tracking-wider text-gray-700 leading-none">BNI TECH COLAB</span>
+          <span class="text-[10px] font-black uppercase tracking-wider text-gray-700 leading-none">BNITECH COLAB</span>
         </div>
         <span class="hidden sm:block text-xs text-gray-400 whitespace-nowrap">&copy; 2026 Global S1</span>
       </div>

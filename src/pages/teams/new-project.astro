@@ -5,6 +5,6 @@ import { CreateProjectView } from '../../components/projects/CreateProjectView';
 const teamId = Astro.url.searchParams.get('teamId') || '';
 ---
 
-<Layout title="BNI Colab — Nuevo Proyecto" requireAuth={true}>
+<Layout title="BNITECH Colab — Nuevo Proyecto" requireAuth={true}>
   {teamId ? <CreateProjectView client:load teamId={teamId} /> : <div class="text-rose-400">Parámetro teamId requerido en la URL.</div>}
 </Layout>

@@ -5,6 +5,6 @@ import { CreateTaskView } from '../../components/tasks/CreateTaskView';
 const projectId = Astro.url.searchParams.get('projectId') || '';
 ---
 
-<Layout title="BNI Colab — Nueva Tarea" requireAuth={true}>
+<Layout title="BNITECH Colab — Nueva Tarea" requireAuth={true}>
   {projectId ? <CreateTaskView client:load projectId={projectId} /> : <div class="text-rose-400">Parámetro projectId requerido en la URL.</div>}
 </Layout>

@@ -112,7 +112,7 @@ export const MagicLoginForm: React.FC = () => {
     return (
       <div className="bg-[#1A1A24]/60 backdrop-blur-2xl p-8 sm:p-10 rounded-[2.5rem] shadow-2xl border border-white/10 ring-1 ring-white/5 text-center text-gray-400">
         <div className="w-8 h-8 border-2 border-[#D40000] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-        <p className="text-sm font-medium">Iniciando sistema BNI Colab...</p>
+        <p className="text-sm font-medium">Iniciando sistema BNITECH Colab...</p>
       </div>
     );
   }
@@ -123,7 +123,7 @@ export const MagicLoginForm: React.FC = () => {
       <div className="bg-[#1A1A24]/60 backdrop-blur-2xl p-8 sm:p-10 rounded-[2.5rem] shadow-2xl border border-white/10 ring-1 ring-white/5 space-y-6">
         <div className="text-center mb-6">
           <div className="bg-white w-20 h-20 rounded-2xl inline-flex items-center justify-center shadow-xl mb-4">
-            <span className="text-xl font-black tracking-tight text-[#D40000] text-center leading-none">TECH</span>
+            <span className="text-xl font-black tracking-tight text-[#D40000] text-center leading-none">BNI</span>
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-white">
             Root <span className="text-[#D40000]">Admin</span>
@@ -187,16 +187,16 @@ export const MagicLoginForm: React.FC = () => {
     );
   }
 
-  // FORMULARIO ESTÁNDAR DE LOGIN EXACTO A BNI EVENTOS
+  // FORMULARIO ESTÁNDAR DE LOGIN
   return (
     <div className="bg-[#1A1A24]/60 backdrop-blur-2xl p-8 sm:p-10 rounded-[2.5rem] shadow-2xl border border-white/10 ring-1 ring-white/5">
-      {/* Header con icono TECH y Colores Idénticos */}
+      {/* Header con icono TECH */}
       <div className="text-center mb-8">
         <div className="bg-white w-24 h-24 rounded-2xl inline-flex items-center justify-center shadow-xl mb-6">
-          <span className="text-2xl font-black tracking-tight text-[#D40000] text-center leading-none">TECH</span>
+          <span className="text-2xl font-black tracking-tight text-[#D40000] text-center leading-none">BNI</span>
         </div>
         <h1 className="text-3xl font-bold tracking-tight">
-          <span className="text-[#D40000]">Colab</span>
+          <span className="text-[#D40000]">TECH</span>
         </h1>
         <p className="text-gray-400 text-sm mt-2 font-medium">Panel de Gestión y Proyectos</p>
       </div>
@@ -272,7 +272,7 @@ export const MagicLoginForm: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#252532]/50 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#D40000] focus:border-transparent transition-all shadow-inner text-sm"
-              placeholder="tu@bni.com"
+              placeholder="tu@bnitech.online"
             />
           </div>
         </div>
