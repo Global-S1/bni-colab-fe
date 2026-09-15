@@ -5,7 +5,16 @@ services:
       dockerfile: Dockerfile
     container_name: colab-fe-prod_bnitech_online
     restart: unless-stopped
-    ports:
+    expose:
       - "4322"
     environment:
-      - PUBLIC_API_URL=${PUBLIC_API_URL:-http://colab-be-prod.bnitech.online:3002/api/v1}
+      - PUBLIC_API_URL=${PUBLIC_API_URL:-https://colab.bnitech.online/api/v1}
+    networks:
+      coolify:
+        aliases:
+          - colab-fe-prod_bnitech_online
+
+networks:
+  coolify:
+    external: true
+    name: coolify
