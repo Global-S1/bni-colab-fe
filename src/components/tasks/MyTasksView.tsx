@@ -1,30 +1,33 @@
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useEffect } from 'react';
+import { fetchApi } from '../../lib/api';
 import { TaskList, TaskItem } from './TaskList';
 
 export const MyTasksView: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('');
-  const token = typeof window !== 'undefined' ? localStorage.getItem('bni_colab_token') : null;
+  const [tasks, setTasks] = useState<TaskItem[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  const { data: tasks, isLoading, error } = useQuery<TaskItem[]>({
-    queryKey: ['my-tasks', statusFilter],
-    queryFn: async () => {
-      const url = new URL(
-        '/api/v1/tasks/my-tasks',
-        import.meta.env.PUBLIC_API_URL || 'https://api.colab.bnitech.online'
-      );
-      if (statusFilter) url.searchParams.append('status', statusFilter);
+  useEffect(() => {
+    const loadTasks = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        let endpoint = '/tasks/my-tasks';
+        if (statusFilter) {
+          endpoint += `?status=${encodeURIComponent(statusFilter)}`;
+        }
+        const data = await fetchApi<TaskItem[]>(endpoint);
+        setTasks(data);
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-      const res = await fetch(url.toString(), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (!res.ok) throw new Error('Error al cargar tus tareas');
-      return res.json();
-    },
-    enabled: !!token,
-  });
+    loadTasks();
+  }, [statusFilter]);
 
   return (
     <div className="flex flex-col h-full space-y-6">
