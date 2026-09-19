@@ -77,6 +77,8 @@ export default function CalendarView() {
     }
   }, [teamId]);
 
+  const [editingMeetingId, setEditingMeetingId] = useState<string | null>(null);
+
   // Open modal with preselected date
   const handleOpenModal = (date?: Date) => {
     const targetDate = date || selectedDate || new Date();
@@ -86,10 +88,38 @@ export default function CalendarView() {
     setStartDateStr(`${yyyy}-${mm}-${dd}`);
     setErrorMessage('');
     setSuccessMessage('');
+    setEditingMeetingId(null);
+    setTitle('');
+    setMeetingUrl('');
+    setLocation('');
+    setDescription('');
+    setProjectId('');
     setShowModal(true);
   };
 
-  const handleCreateMeeting = async (e: React.FormEvent) => {
+  const handleEditMeeting = (m: Meeting) => {
+    setShowDetailModal(false);
+    setEditingMeetingId(m.id);
+    setTitle(m.title);
+    setTeamId(m.teamId);
+    setProjectId(m.projectId || '');
+    setMeetingUrl(m.meetingUrl || '');
+    setLocation(m.location || '');
+    setDescription(m.description || '');
+
+    const sd = new Date(m.startTime);
+    const ed = new Date(m.endTime);
+
+    setStartDateStr(`${sd.getFullYear()}-${String(sd.getMonth() + 1).padStart(2, '0')}-${String(sd.getDate()).padStart(2, '0')}`);
+    setStartTimeStr(`${String(sd.getHours()).padStart(2, '0')}:${String(sd.getMinutes()).padStart(2, '0')}`);
+    setEndTimeStr(`${String(ed.getHours()).padStart(2, '0')}:${String(ed.getMinutes()).padStart(2, '0')}`);
+
+    setErrorMessage('');
+    setSuccessMessage('');
+    setShowModal(true);
+  };
+
+  const handleSaveMeeting = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !teamId || !startDateStr || !startTimeStr || !endTimeStr) {
       setErrorMessage('Por favor completa los campos obligatorios (*)');
@@ -109,21 +139,31 @@ export default function CalendarView() {
         return;
       }
 
-      await fetchApi<Meeting>('/meetings', {
-        method: 'POST',
-        body: JSON.stringify({
-          title,
-          description,
-          startTime: startDateTime.toISOString(),
-          endTime: endDateTime.toISOString(),
-          meetingUrl: meetingUrl.trim() || undefined,
-          location: location.trim() || undefined,
-          teamId,
-          projectId: projectId || undefined,
-        }),
-      });
+      const payload = {
+        title,
+        description,
+        startTime: startDateTime.toISOString(),
+        endTime: endDateTime.toISOString(),
+        meetingUrl: meetingUrl.trim() || undefined,
+        location: location.trim() || undefined,
+        teamId,
+        projectId: projectId || undefined,
+      };
 
-      setSuccessMessage('¡Reunión programada y notificaciones con .ics enviadas a los miembros del equipo!');
+      if (editingMeetingId) {
+        await fetchApi<Meeting>(`/meetings/${editingMeetingId}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        });
+        setSuccessMessage('¡Reunión actualizada y notificaciones enviadas!');
+      } else {
+        await fetchApi<Meeting>('/meetings', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        });
+        setSuccessMessage('¡Reunión programada y notificaciones con .ics enviadas!');
+      }
+
       setTimeout(() => {
         setShowModal(false);
         setSuccessMessage('');
@@ -132,10 +172,11 @@ export default function CalendarView() {
         setLocation('');
         setDescription('');
         setProjectId('');
+        setEditingMeetingId(null);
         loadData();
       }, 1500);
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error al programar la reunión.');
+      setErrorMessage(err.message || 'Error al guardar la reunión.');
     } finally {
       setSaving(false);
     }
@@ -609,7 +650,7 @@ export default function CalendarView() {
             <div className="flex items-center justify-between pb-4 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#D40000]"></span>
-                <h3 className="text-lg font-black text-gray-900 tracking-tight">Programar Nueva Reunión</h3>
+                <h3 className="text-lg font-black text-gray-900 tracking-tight">{editingMeetingId ? 'Editar Reunión' : 'Programar Nueva Reunión'}</h3>
               </div>
               <button
                 onClick={() => setShowModal(false)}
@@ -633,7 +674,7 @@ export default function CalendarView() {
               </div>
             )}
 
-            <form onSubmit={handleCreateMeeting} className="mt-4 space-y-4">
+            <form onSubmit={handleSaveMeeting} className="mt-4 space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1">
                   Título de la Reunión *
@@ -768,7 +809,7 @@ export default function CalendarView() {
                   disabled={saving}
                   className="px-5 py-2.5 bg-[#D40000] hover:bg-[#B00000] text-white text-sm font-bold rounded-xl shadow-md shadow-[#D40000]/20 disabled:opacity-50 cursor-pointer transition-all"
                 >
-                  {saving ? 'Programando y enviando...' : 'Confirmar y Notificar'}
+                  {saving ? (editingMeetingId ? 'Actualizando y notificando...' : 'Programando y enviando...') : (editingMeetingId ? 'Actualizar y Notificar' : 'Confirmar y Notificar')}
                 </button>
               </div>
             </form>
@@ -872,15 +913,23 @@ export default function CalendarView() {
                 >
                   Añadir a Google Calendar
                 </a>
-                <button
-                  onClick={() => {
-                    handleDeleteMeeting(m.id);
-                    setShowDetailModal(false);
-                  }}
-                  className="px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-bold rounded-xl transition-colors cursor-pointer"
-                >
-                  Cancelar Reunión
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleEditMeeting(m)}
+                    className="px-4 py-2 text-blue-600 hover:bg-blue-50 text-sm font-bold rounded-xl transition-colors cursor-pointer"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleDeleteMeeting(m.id);
+                      setShowDetailModal(false);
+                    }}
+                    className="px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-bold rounded-xl transition-colors cursor-pointer"
+                  >
+                    Cancelar Reunión
+                  </button>
+                </div>
               </div>
             </div>
           </div>
