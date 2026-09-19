@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { fetchApi } from '../../lib/api';
+import { fetchApi, resolveFileUrl } from '../../lib/api';
 import { FilePreviewModal, PreviewableFile } from '../common/FilePreviewModal';
 
 interface DocumentItem {
@@ -432,7 +432,7 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
                     onClick={() => {
                       setPreviewFile({
                         name: doc.name,
-                        fileUrl: doc.fileUrl,
+                        fileUrl: resolveFileUrl(doc.fileUrl),
                         mimeType: doc.mimeType,
                         fileSize: doc.fileSize,
                       });
@@ -448,7 +448,7 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
                   </button>
 
                   <a
-                    href={doc.fileUrl}
+                    href={resolveFileUrl(doc.fileUrl)}
                     target="_blank"
                     rel="noreferrer"
                     download
@@ -514,7 +514,7 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
                     onClick={() => {
                       setPreviewFile({
                         name: doc.name,
-                        fileUrl: doc.fileUrl,
+                        fileUrl: resolveFileUrl(doc.fileUrl),
                         mimeType: doc.mimeType,
                         fileSize: doc.fileSize,
                       });
@@ -528,7 +528,7 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
                     </svg>
                   </button>
                   <a
-                    href={doc.fileUrl}
+                    href={resolveFileUrl(doc.fileUrl)}
                     target="_blank"
                     rel="noreferrer"
                     download

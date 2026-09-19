@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { resolveFileUrl } from '../../lib/api';
 
 export interface PreviewableFile {
   name: string;
@@ -35,9 +36,9 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
   useEffect(() => {
     if (isOpen && file) {
       setImgError(false);
-      const ext = getExtension(file.name, file.fileUrl);
+      const ext = getExtension(file.name, resolveFileUrl(file.fileUrl));
       if (isTextExtension(ext)) {
-        loadTextContent(file.fileUrl);
+        loadTextContent(resolveFileUrl(file.fileUrl));
       } else {
         setTextContent(null);
       }
@@ -53,7 +54,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
     return cleanUrl.split('.').pop()?.toLowerCase() || '';
   };
 
-  const ext = getExtension(file.name, file.fileUrl);
+  const ext = getExtension(file.name, resolveFileUrl(file.fileUrl));
   const mime = (file.mimeType || '').toLowerCase();
 
   const isImage =
@@ -101,8 +102,8 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
   };
 
   // Viewers
-  const googleDocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(file.fileUrl)}&embedded=true`;
-  const officeOnlineViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(file.fileUrl)}`;
+  const googleDocsViewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(resolveFileUrl(file.fileUrl))}&embedded=true`;
+  const officeOnlineViewerUrl = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(resolveFileUrl(file.fileUrl))}`;
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col items-center justify-between p-3 sm:p-6 animate-in fade-in duration-200">
@@ -163,7 +164,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
           )}
 
           <a
-            href={file.fileUrl}
+            href={resolveFileUrl(file.fileUrl)}
             target="_blank"
             rel="noreferrer"
             className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-xl transition-all border border-gray-700 flex items-center gap-1.5"
@@ -181,7 +182,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
           </a>
 
           <a
-            href={file.fileUrl}
+            href={resolveFileUrl(file.fileUrl)}
             download
             className="px-3.5 py-1.5 bg-[#D40000] hover:bg-[#B00000] text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-[#D40000]/30 flex items-center gap-1.5"
           >
@@ -215,7 +216,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
           <div className="w-full h-full flex items-center justify-center overflow-auto p-2">
             {!imgError ? (
               <img
-                src={file.fileUrl}
+                src={resolveFileUrl(file.fileUrl)}
                 alt={file.name}
                 onError={() => setImgError(true)}
                 className="max-h-[75vh] max-w-full object-contain rounded-xl shadow-2xl border border-gray-800 bg-[#0F0F12]"
@@ -233,7 +234,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
                 </div>
                 <div className="flex items-center justify-center gap-2 pt-2">
                   <a
-                    href={file.fileUrl}
+                    href={resolveFileUrl(file.fileUrl)}
                     target="_blank"
                     rel="noreferrer"
                     className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs rounded-xl transition-all border border-gray-700"
@@ -241,7 +242,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
                     Abrir Enlace
                   </a>
                   <a
-                    href={file.fileUrl}
+                    href={resolveFileUrl(file.fileUrl)}
                     download
                     className="px-4 py-2 bg-[#D40000] hover:bg-[#B00000] text-white font-bold text-xs rounded-xl transition-all"
                   >
@@ -256,7 +257,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
         {/* PDF PREVIEW */}
         {isPdf && (
           <iframe
-            src={file.fileUrl}
+            src={resolveFileUrl(file.fileUrl)}
             title={file.name}
             className="w-full h-full min-h-[70vh] rounded-xl bg-white border-0 shadow-xl"
           />
@@ -278,7 +279,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
         {isVideo && (
           <div className="w-full h-full flex items-center justify-center">
             <video
-              src={file.fileUrl}
+              src={resolveFileUrl(file.fileUrl)}
               controls
               autoPlay
               className="max-h-[75vh] max-w-full rounded-xl bg-black shadow-2xl"
@@ -296,7 +297,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
               <h4 className="font-bold text-white text-base">{file.name}</h4>
               <p className="text-xs text-gray-400 mt-1">Reproductor de Audio Integrado</p>
             </div>
-            <audio src={file.fileUrl} controls className="w-full" autoPlay />
+            <audio src={resolveFileUrl(file.fileUrl)} controls className="w-full" autoPlay />
           </div>
         )}
 
@@ -314,7 +315,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
               <div className="py-12 text-center text-red-400 space-y-2">
                 <p>⚠️ No se pudo renderizar el texto directamente en el navegador.</p>
                 <a
-                  href={file.fileUrl}
+                  href={resolveFileUrl(file.fileUrl)}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-block px-4 py-2 bg-gray-800 text-white font-bold text-xs rounded-xl"
@@ -346,7 +347,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
             </div>
             <div className="flex items-center justify-center gap-3">
               <a
-                href={file.fileUrl}
+                href={resolveFileUrl(file.fileUrl)}
                 target="_blank"
                 rel="noreferrer"
                 className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs rounded-xl transition-all border border-gray-700"
@@ -354,7 +355,7 @@ export const FilePreviewModal: React.FC<FilePreviewModalProps> = ({ isOpen, onCl
                 Abrir en Navegador
               </a>
               <a
-                href={file.fileUrl}
+                href={resolveFileUrl(file.fileUrl)}
                 download
                 className="px-4 py-2 bg-[#D40000] hover:bg-[#B00000] text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-[#D40000]/30"
               >
