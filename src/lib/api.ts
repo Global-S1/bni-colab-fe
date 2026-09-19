@@ -67,5 +67,20 @@ export interface Meeting {
  */
 export function resolveFileUrl(url?: string): string {
   if (!url) return '';
-  return url.replace('http://localhost:3002/api/v1', API_BASE_URL);
+  let resolvedUrl = url.replace('http://localhost:3002/api/v1', API_BASE_URL);
+
+  // Fix SSL certificate issue for S3 buckets with dots in their name
+  // Converts: https://guest-files.bnitech.online.s3.amazonaws.com/...
+  // To:       https://s3.amazonaws.com/guest-files.bnitech.online/...
+  const s3Regex = /^https:\/\/([^/]+)\.s3\.amazonaws\.com\/(.+)$/;
+  const match = resolvedUrl.match(s3Regex);
+  if (match) {
+    const bucketName = match[1];
+    const path = match[2];
+    if (bucketName.includes('.')) {
+      resolvedUrl = `https://s3.amazonaws.com/${bucketName}/${path}`;
+    }
+  }
+
+  return resolvedUrl;
 }
