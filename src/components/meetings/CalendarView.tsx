@@ -26,6 +26,8 @@ export default function CalendarView() {
 
   // Modal / Form state for new meeting
   const [showModal, setShowModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedMeetingDetail, setSelectedMeetingDetail] = useState<Meeting | null>(null);
   const [saving, setSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -378,7 +380,12 @@ export default function CalendarView() {
                         {dayMeetings.slice(0, 2).map((m) => (
                           <div
                             key={m.id}
-                            className="text-[10px] font-semibold bg-red-100/70 text-[#900] px-1.5 py-0.5 rounded truncate"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedMeetingDetail(m);
+                              setShowDetailModal(true);
+                            }}
+                            className="text-[10px] font-semibold bg-red-100/70 text-[#900] px-1.5 py-0.5 rounded truncate hover:bg-red-200 transition-colors cursor-pointer"
                             title={m.title}
                           >
                             {new Date(m.startTime).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}{' '}
@@ -423,7 +430,11 @@ export default function CalendarView() {
                   return (
                     <div
                       key={m.id}
-                      className="p-4 bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all"
+                      onClick={() => {
+                        setSelectedMeetingDetail(m);
+                        setShowDetailModal(true);
+                      }}
+                      className="p-4 bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all cursor-pointer"
                     >
                       <div>
                         <div className="flex items-center gap-2 mb-1">
@@ -458,13 +469,17 @@ export default function CalendarView() {
                           href={gCalUrl}
                           target="_blank"
                           rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="px-3 py-1.5 text-xs font-bold text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg shadow-sm"
                           title="Añadir a Google Calendar"
                         >
                           + GCal
                         </a>
                         <button
-                          onClick={() => handleDeleteMeeting(m.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteMeeting(m.id);
+                          }}
                           className="p-1.5 text-gray-400 hover:text-red-600 rounded-lg cursor-pointer"
                           title="Eliminar"
                         >
@@ -522,7 +537,11 @@ export default function CalendarView() {
                 return (
                   <div
                     key={m.id}
-                    className="p-4 bg-gray-50 border-l-4 border-l-[#D40000] border-gray-200 rounded-r-xl space-y-2"
+                    onClick={() => {
+                      setSelectedMeetingDetail(m);
+                      setShowDetailModal(true);
+                    }}
+                    className="p-4 bg-gray-50 border-l-4 border-l-[#D40000] border-gray-200 rounded-r-xl space-y-2 hover:bg-gray-100 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
@@ -544,6 +563,7 @@ export default function CalendarView() {
                           href={m.meetingUrl}
                           target="_blank"
                           rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#D40000] hover:bg-[#B00000] text-white text-xs font-bold rounded-lg transition-colors"
                         >
                           <span>Entrar a Reunión</span>
@@ -559,12 +579,16 @@ export default function CalendarView() {
                         href={gCalUrl}
                         target="_blank"
                         rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
                         className="text-[11px] font-bold text-gray-500 hover:text-gray-900"
                       >
                         📅 Añadir a Google Cal
                       </a>
                       <button
-                        onClick={() => handleDeleteMeeting(m.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteMeeting(m.id);
+                        }}
                         className="text-[11px] font-bold text-red-600 hover:underline cursor-pointer"
                       >
                         Eliminar
@@ -751,6 +775,117 @@ export default function CalendarView() {
           </div>
         </div>
       )}
+
+      {/* Modal Detalle Reunión */}
+      {showDetailModal && selectedMeetingDetail && (() => {
+        const m = selectedMeetingDetail;
+        const start = new Date(m.startTime);
+        const end = new Date(m.endTime);
+        const team = teams.find((t) => t.id === m.teamId);
+        const project = projects.find((p) => p.id === m.projectId);
+        const gCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+          m.title,
+        )}&dates=${start.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${
+          end.toISOString().replace(/[-:]/g, '').split('.')[0]
+        }Z&details=${encodeURIComponent(m.description || '')}&location=${encodeURIComponent(m.meetingUrl || m.location || '')}`;
+
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+            <div className="bg-white border border-gray-200 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+              <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#D40000]"></span>
+                  <h3 className="text-lg font-black text-gray-900 tracking-tight">Detalles de la Reunión</h3>
+                </div>
+                <button
+                  onClick={() => setShowDetailModal(false)}
+                  className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div className="mt-4 space-y-4">
+                <div>
+                  <h4 className="text-xl font-bold text-gray-900">{m.title}</h4>
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <span className="px-2 py-0.5 bg-red-100 text-[#D40000] text-[10px] font-black uppercase rounded-full">
+                      {team?.name || 'Equipo'}
+                    </span>
+                    {project && (
+                      <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-black uppercase rounded-full">
+                        {project.name}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                  <div className="flex items-center gap-3 text-sm text-gray-700">
+                    <svg className="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <div>
+                      <p className="font-bold">{start.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+                      <p className="text-gray-500">{start.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} - {end.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {m.description && (
+                  <div>
+                    <h5 className="text-xs font-bold uppercase text-gray-500 mb-1">Descripción</h5>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{m.description}</p>
+                  </div>
+                )}
+
+                {(m.meetingUrl || m.location) && (
+                  <div>
+                    <h5 className="text-xs font-bold uppercase text-gray-500 mb-1">Ubicación / Enlace</h5>
+                    {m.meetingUrl ? (
+                      <a
+                        href={m.meetingUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#D40000]/10 text-[#D40000] text-sm font-bold rounded-lg hover:bg-[#D40000]/20 transition-colors"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                        Unirse a la llamada
+                      </a>
+                    ) : (
+                      <p className="text-sm text-gray-700">{m.location}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between pt-6 mt-6 border-t border-gray-100">
+                <a
+                  href={gCalUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors"
+                >
+                  Añadir a Google Calendar
+                </a>
+                <button
+                  onClick={() => {
+                    handleDeleteMeeting(m.id);
+                    setShowDetailModal(false);
+                  }}
+                  className="px-4 py-2 text-red-600 hover:bg-red-50 text-sm font-bold rounded-xl transition-colors cursor-pointer"
+                >
+                  Cancelar Reunión
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

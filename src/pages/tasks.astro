@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { MyTasksView } from '../components/tasks/MyTasksView';
+---
+
+<Layout title="Mis Tareas" requireAuth={true}>
+  <MyTasksView client:load />
+</Layout>
