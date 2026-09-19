@@ -60,3 +60,12 @@ export interface Meeting {
   createdById: string;
   createdAt: string;
 }
+
+/**
+ * Resolves file URLs that might have been saved with a localhost fallback in the database.
+ * Replaces http://localhost:3002/api/v1 with the actual production API base URL.
+ */
+export function resolveFileUrl(url?: string): string {
+  if (!url) return '';
+  return url.replace('http://localhost:3002/api/v1', API_BASE_URL);
+}

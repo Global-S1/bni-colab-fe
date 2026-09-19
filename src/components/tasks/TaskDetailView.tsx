@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { fetchApi } from '../../lib/api';
+import { fetchApi, resolveFileUrl } from '../../lib/api';
 import { FilePreviewModal, PreviewableFile } from '../common/FilePreviewModal';
 
 interface Member {
@@ -522,7 +522,7 @@ export default function TaskDetailView({ taskId }: { taskId: string }) {
                           onClick={() => {
                             setPreviewFile({
                               name: att.fileName,
-                              fileUrl: att.fileUrl,
+                              fileUrl: resolveFileUrl(att.fileUrl),
                               mimeType: att.mimeType,
                               fileSize: att.fileSize,
                             });
@@ -537,7 +537,7 @@ export default function TaskDetailView({ taskId }: { taskId: string }) {
                           <span>Ver</span>
                         </button>
                         <a
-                          href={att.fileUrl}
+                          href={resolveFileUrl(att.fileUrl)}
                           target="_blank"
                           rel="noreferrer"
                           download
