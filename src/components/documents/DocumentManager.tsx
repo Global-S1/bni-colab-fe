@@ -16,11 +16,19 @@ interface DocumentItem {
     name: string;
     email: string;
   };
+  deletedAt?: string;
+  deleter?: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
+  const [deletedDocuments, setDeletedDocuments] = useState<DocumentItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'ACTIVE' | 'HISTORY'>('ACTIVE');
 
   // Preview modal state
   const [previewFile, setPreviewFile] = useState<PreviewableFile | null>(null);
@@ -42,8 +50,12 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
   const loadDocuments = async () => {
     try {
       setLoading(true);
-      const data = await fetchApi<DocumentItem[]>(`/documents/project/${projectId}`);
-      setDocuments(data);
+      const [docsData, deletedData] = await Promise.all([
+        fetchApi<DocumentItem[]>(`/documents/project/${projectId}`),
+        fetchApi<DocumentItem[]>(`/documents/project/${projectId}/history`),
+      ]);
+      setDocuments(docsData);
+      setDeletedDocuments(deletedData);
     } catch (err: any) {
       console.error(err);
     } finally {
@@ -142,6 +154,16 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
       loadDocuments();
     } catch (err: any) {
       alert(err.message || 'Error eliminando documento');
+    }
+  };
+
+  const handleRestore = async (id: string) => {
+    if (!confirm('¿Estás seguro de restaurar este documento?')) return;
+    try {
+      await fetchApi(`/documents/${id}/restore`, { method: 'POST' });
+      loadDocuments();
+    } catch (err: any) {
+      alert(err.message || 'Error restaurando documento');
     }
   };
 
@@ -329,11 +351,29 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
 
       {/* Documents List */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-gray-900">
-            Documentos Adjuntos ({documents.length})
-          </h3>
-          <span className="text-xs text-gray-400">Archivos centralizados del proyecto</span>
+        <div className="flex items-center justify-between border-b border-gray-200">
+          <div className="flex space-x-6">
+            <button
+              onClick={() => setActiveTab('ACTIVE')}
+              className={`py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
+                activeTab === 'ACTIVE'
+                  ? 'border-[#D40000] text-[#D40000]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Archivos Activos ({documents.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('HISTORY')}
+              className={`py-3 text-sm font-bold border-b-2 transition-colors cursor-pointer ${
+                activeTab === 'HISTORY'
+                  ? 'border-[#D40000] text-[#D40000]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Historial Eliminados ({deletedDocuments.length})
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -341,17 +381,18 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
             <div className="w-6 h-6 border-2 border-[#D40000] border-t-transparent rounded-full animate-spin"></div>
             <span className="text-xs">Cargando documentos...</span>
           </div>
-        ) : documents.length === 0 ? (
-          <div className="bg-white p-12 text-center rounded-2xl border border-gray-200 shadow-sm text-gray-400 text-sm">
-            <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-            </svg>
-            <p className="font-semibold text-gray-600">No hay documentos cargados en este proyecto.</p>
-            <p className="text-xs text-gray-400 mt-1">Usa el formulario superior para cargar el primer archivo.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {documents.map((doc) => (
+        ) : activeTab === 'ACTIVE' ? (
+          documents.length === 0 ? (
+            <div className="bg-white p-12 text-center rounded-2xl border border-gray-200 shadow-sm text-gray-400 text-sm">
+              <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              </svg>
+              <p className="font-semibold text-gray-600">No hay documentos cargados en este proyecto.</p>
+              <p className="text-xs text-gray-400 mt-1">Usa el formulario superior para cargar el primer archivo.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {documents.map((doc) => (
               <div
                 key={doc.id}
                 className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex items-start justify-between gap-4 hover:border-[#D40000]/40 hover:shadow-md transition-all"
@@ -428,6 +469,81 @@ export const DocumentManager: React.FC<{ projectId: string }> = ({ projectId }) 
               </div>
             ))}
           </div>
+        ) : (
+          deletedDocuments.length === 0 ? (
+            <div className="bg-white p-12 text-center rounded-2xl border border-gray-200 shadow-sm text-gray-400 text-sm">
+              <p className="font-semibold text-gray-600">No hay documentos eliminados en el historial.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {deletedDocuments.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="bg-gray-50 p-5 rounded-2xl border border-gray-200 shadow-sm flex items-start justify-between gap-4 opacity-75"
+                >
+                  <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                    <div className="w-11 h-11 rounded-xl bg-gray-200 text-gray-500 border border-gray-300 flex items-center justify-center text-xl shrink-0">
+                      {getFileIcon(doc.name, doc.mimeType)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="font-bold text-gray-900 text-sm truncate line-through" title={doc.name}>
+                        {doc.name}
+                      </h4>
+                      <div className="flex flex-col gap-1 text-[11px] text-gray-500 mt-1.5">
+                        <span className="flex items-center gap-1">
+                          <span className="font-semibold text-[#D40000]">Eliminado el:</span>
+                          <span>{doc.deletedAt ? new Date(doc.deletedAt).toLocaleDateString('es-ES') : '-'}</span>
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <span className="font-semibold text-[#D40000]">Por:</span>
+                          <span>{doc.deleter?.name || doc.deleter?.email || 'Miembro'}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+  
+                  <div className="flex items-center gap-2 shrink-0 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPreviewFile({
+                          name: doc.name,
+                          fileUrl: doc.fileUrl,
+                          mimeType: doc.mimeType,
+                          fileSize: doc.fileSize,
+                        });
+                        setShowPreview(true);
+                      }}
+                      className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider rounded-lg transition-all border border-gray-300 flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </button>
+                    <a
+                      href={doc.fileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      download
+                      className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-xs uppercase tracking-wider rounded-lg transition-all border border-gray-300 flex items-center gap-1 cursor-pointer"
+                    >
+                      <svg className="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                      </svg>
+                    </a>
+                    <button
+                      onClick={() => handleRestore(doc.id)}
+                      className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs uppercase tracking-wider rounded-lg transition-colors border border-emerald-200 cursor-pointer"
+                      title="Restaurar documento"
+                    >
+                      Restaurar
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )
         )}
       </div>
 

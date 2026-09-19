@@ -29,10 +29,10 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
   <aside id="sidebar" class="w-[85vw] max-w-[300px] md:w-64 bg-[#121117] text-gray-300 flex-shrink-0 flex flex-col absolute inset-y-0 left-0 z-40 md:static shadow-2xl transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0 hidden md:flex">
     <!-- Logo Area -->
     <div data-tour="logo-brand" class="h-16 md:h-20 flex items-center px-4 md:px-6 border-b border-gray-800/60 bg-[#1A1A24]">
-      <div class="bg-white w-10 h-10 rounded-lg mr-3 shadow-md inline-flex items-center justify-center shrink-0">
-        <span class="text-[9px] font-black tracking-tight text-[#D40000] text-center leading-none">BNI</span>
+      <div class="bg-white px-2 h-10 rounded-lg mr-3 shadow-md inline-flex items-center justify-center shrink-0">
+        <span class="text-[9px] font-black tracking-tight text-[#D40000] text-center leading-none">BNI TECH</span>
       </div>
-      <span class="text-xl font-bold text-white tracking-wide"><span class="text-[#D40000] font-black">TECH</span></span>
+      <span class="text-xl font-bold text-white tracking-wide"><span class="text-[#D40000] font-black">COLAB</span></span>
       <span class="ml-2 text-[10px] font-semibold text-gray-500 bg-gray-800/60 border border-gray-700/60 rounded-full px-2 py-0.5 tracking-wider">v1.0</span>
     </div>
 
@@ -84,6 +84,21 @@ const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/';
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
           <span>Calendario</span>
+        </a>
+
+        <a
+          href="/tasks"
+          data-tour="nav-tasks"
+          class={`menu-link group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all ${
+            currentPath === '/tasks'
+              ? 'bg-[#D40000] text-white shadow-lg shadow-[#D40000]/20 font-bold'
+              : 'text-gray-400 border border-transparent hover:bg-[#1A1A24] hover:text-white hover:border-gray-800/50'
+          }`}
+        >
+          <svg class="w-5 h-5 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+          </svg>
+          <span>Mis Tareas</span>
         </a>
 
         <div id="nav-admin-section" class="hidden">
