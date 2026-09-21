@@ -42,7 +42,8 @@ export const ALL: APIRoute = async ({ params, request }) => {
 
   for (const backend of CANDIDATE_BACKENDS) {
     try {
-      const targetUrl = `${backend}/${subPath}${queryString}`;
+      const normalizedPath = subPath.startsWith('api/') ? subPath : `api/${subPath}`;
+      const targetUrl = `${backend}/${normalizedPath}${queryString}`;
       const res = await fetch(targetUrl, {
         method,
         headers: forwardHeaders,
