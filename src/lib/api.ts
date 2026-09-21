@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.PUBLIC_API_URL || '/api/v1';
+const API_BASE_URL = import.meta.env.PUBLIC_API_URL || '/api-proxy/api/v1';
 
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {
@@ -67,7 +67,9 @@ export interface Meeting {
  */
 export function resolveFileUrl(url?: string): string {
   if (!url) return '';
-  let resolvedUrl = url.replace('http://localhost:3002/api/v1', API_BASE_URL);
+  let resolvedUrl = url
+    .replace('http://localhost:3002/api/v1', API_BASE_URL)
+    .replace('https://colab.bnitech.online/api/v1', API_BASE_URL);
 
   // Fix SSL certificate issue for S3 buckets with dots in their name
   // Converts: https://guest-files.bnitech.online.s3.amazonaws.com/...
